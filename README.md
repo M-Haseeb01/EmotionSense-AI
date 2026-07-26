@@ -58,19 +58,12 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
-
-Open in your browser:
-
-```
-http://127.0.0.1:5000
-```
-
 ---
 
 ## Demo
 
 
-![](demo_img)
+![Input Image](demo_img)
 
 
 ---
