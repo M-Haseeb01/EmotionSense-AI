@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emotion Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --primary:#4f46e5;
+            --primary-dark:#4338ca;
+            --primary-light:#eef2ff;
+            --text:#1f2937;
+            --muted:#6b7280;
+            --border:#e5e7eb;
+            --success-bg:#ecfdf5;
+            --success-border:#a7f3d0;
+            --success-text:#065f46;
+        }
+ 
+        *{
+            box-sizing:border-box;
+        }
+ 
+        body{
+            font-family:'Inter', Arial, sans-serif;
+            background:linear-gradient(135deg, #eef2ff 0%, #f9fafb 50%, #f3f4f6 100%);
+            min-height:100vh;
+            margin:0;
+            padding:40px 20px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+ 
+        .container{
+            width:100%;
+            max-width:480px;
+            background:#ffffff;
+            padding:40px;
+            border-radius:16px;
+            box-shadow:0 4px 6px -1px rgba(0,0,0,0.05), 0 12px 32px -4px rgba(79,70,229,0.12);
+            border:1px solid var(--border);
+        }
+ 
+        .header{
+            text-align:center;
+            margin-bottom:28px;
+        }
+ 
+        .header .icon{
+            width:56px;
+            height:56px;
+            margin:0 auto 16px;
+            background:var(--primary-light);
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:26px;
+        }
+ 
+        h1{
+            color:var(--text);
+            font-size:24px;
+            font-weight:700;
+            margin:0 0 6px 0;
+            letter-spacing:-0.02em;
+        }
+ 
+        .subtitle{
+            color:var(--muted);
+            font-size:14px;
+            margin:0;
+        }
+ 
+        label{
+            display:block;
+            font-size:13px;
+            font-weight:600;
+            color:var(--text);
+            margin-bottom:8px;
+            text-align:left;
+        }
+ 
+        textarea{
+            width:100%;
+            height:140px;
+            padding:14px;
+            font-size:15px;
+            font-family:inherit;
+            color:var(--text);
+            border-radius:10px;
+            border:1.5px solid var(--border);
+            resize:none;
+            background:#fafafa;
+            transition:border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+        }
+ 
+        textarea::placeholder{
+            color:#9ca3af;
+        }
+ 
+        textarea:focus{
+            outline:none;
+            border-color:var(--primary);
+            background:#ffffff;
+            box-shadow:0 0 0 4px rgba(79,70,229,0.1);
+        }
+ 
+        button{
+            margin-top:18px;
+            width:100%;
+            padding:13px 20px;
+            background:var(--primary);
+            color:#ffffff;
+            border:none;
+            border-radius:10px;
+            cursor:pointer;
+            font-size:15px;
+            font-weight:600;
+            font-family:inherit;
+            letter-spacing:0.01em;
+            transition:background 0.15s ease, transform 0.05s ease;
+        }
+ 
+        button:hover{
+            background:var(--primary-dark);
+        }
+ 
+        button:active{
+            transform:scale(0.98);
+        }
+ 
+        .result{
+            margin-top:24px;
+            padding:20px;
+            background:var(--success-bg);
+            border:1px solid var(--success-border);
+            border-radius:12px;
+            text-align:left;
+            animation:fadeIn 0.3s ease;
+        }
+ 
+        @keyframes fadeIn{
+            from{ opacity:0; transform:translateY(-6px); }
+            to{ opacity:1; transform:translateY(0); }
+        }
+ 
+        .result-row{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:6px 0;
+        }
+ 
+        .result-row + .result-row{
+            border-top:1px solid var(--success-border);
+            margin-top:6px;
+            padding-top:12px;
+        }
+ 
+        .result-label{
+            font-size:13px;
+            font-weight:600;
+            color:var(--success-text);
+            text-transform:uppercase;
+            letter-spacing:0.04em;
+        }
+ 
+        .result-value{
+            font-size:18px;
+            font-weight:700;
+            color:var(--success-text);
+        }
+ 
+        .confidence-bar{
+            width:100%;
+            height:8px;
+            background:#d1fae5;
+            border-radius:99px;
+            margin-top:10px;
+            overflow:hidden;
+        }
+ 
+        .confidence-fill{
+            height:100%;
+            background:linear-gradient(90deg, #10b981, #059669);
+            border-radius:99px;
+        }
+ 
+        .footer-note{
+            margin-top:20px;
+            font-size:12px;
+            color:var(--muted);
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="icon">🎭</div>
+        <h1>Emotion Detection</h1>
+        <p class="subtitle">Analyze the emotional tone of any sentence</p>
+    </div>
+ 
+    <form action="/predict" method="POST">
+        <label for="text">Your text</label>
+        <textarea
+            id="text"
+            name="text"
+            placeholder="Enter your sentence here..."
+            required></textarea>
+        <button type="submit">Detect Emotion</button>
+    </form>
+ 
+    {% if emotion %}
+    <div class="result">
+        <div class="result-row">
+            <span class="result-label">Emotion</span>
+            <span class="result-value">{{ emotion }}</span>
+        </div>
+        <div class="result-row">
+            <span class="result-label">Confidence</span>
+            <span class="result-value">{{ confidence }}%</span>
+        </div>
+        <div class="confidence-bar">
+            <div class="confidence-fill" style="width: {{ confidence }}%;"></div>
+        </div>
+    </div>
+    {% endif %}
+ 
+    <p class="footer-note">Powered by your trained emotion classification model</p>
+</div>
+</body>
+</html>
+ 
