@@ -62,6 +62,7 @@ python app.py
 
 ## Demo
 
+### Input Image
 
 ![Input Image](demo_img)
 
