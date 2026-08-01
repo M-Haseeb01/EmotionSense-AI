@@ -3,7 +3,7 @@ from transformers import pipeline
 
 app = Flask(__name__)
 
-# Load pretrained emotion detection model
+# Load emotion detection model
 classifier = pipeline(
     "text-classification",
     model="j-hartmann/emotion-english-distilroberta-base",
